@@ -39,10 +39,21 @@ const HUMAN_FOLLOWING_SELECTOR = '[aria-label="Following"]';
 const RADIO_SELECTOR = '[role="radio"]';
 
 
+const findElementWithRetry = (querySelectorString) => {
+  const element = document.querySelector(querySelectorString)
+  if (element) {
+    return element;
+  } else {
+    //calls itself again if not found
+    setTimeout(findElementWithRetry, 100);
+  }
+}
+
 const clickMore = () =>{
   const preview = document.querySelector(PREVIEW_SELECTOR)
   if (preview) {
-    preview.querySelector(MORE_SELECTOR).click();
+    const moreOptions: HTMLElement | null = preview.querySelector(MORE_SELECTOR);
+    moreOptions?.click();
   } else {
     //calls itself again if not found
     setTimeout(clickMore, 100);
@@ -54,7 +65,7 @@ const clickMoreMenuFollowing = ()=>{
   if (menu) {
     const spans = menu.querySelectorAll("span");
     spans.forEach(s=>{
-      if(s.textContent.includes('Following')){
+      if(s.textContent?.includes('Following')){
         s.click();
       }
     })
@@ -68,12 +79,12 @@ const selectUnfollowAndSave = ()=>{
   const settingsMenu = document.querySelector(SETTINGS_SELECTOR)
   if (settingsMenu) {
     //Theres 3 radio opts, we always need the third
-    const radios = settingsMenu.querySelectorAll(RADIO_SELECTOR);
+    const radios: NodeListOf<HTMLElement> = settingsMenu.querySelectorAll(RADIO_SELECTOR);
     radios[2].click();
 
     //click is too fast, wont register without delay
-    const updateBtn = settingsMenu.querySelector(UPDATE_SELECTOR)
-    setTimeout(()=>updateBtn.click(), 100);
+    const updateBtn: HTMLElement | null = settingsMenu.querySelector(UPDATE_SELECTOR)
+    setTimeout(()=>updateBtn?.click(), 100);
   } else {
     //calls itself again if not found
     setTimeout(selectUnfollowAndSave, 100);
@@ -109,7 +120,7 @@ cards.forEach((card,index) => {
       'bubbles': true,
       'cancelable': true
     });
-    link.dispatchEvent(ev);
+    link?.dispatchEvent(ev);
     //----------------------------
 
 
